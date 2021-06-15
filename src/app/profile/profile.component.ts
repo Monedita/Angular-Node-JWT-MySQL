@@ -1,6 +1,7 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { SubscriptionLike } from "rxjs";
 
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
@@ -10,12 +11,11 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
 
   @ViewChild('fileInput', { static: false }) fileInput?: ElementRef;
-  //@ViewChild('viewMe', { static: false })  viewMe?: ElementRef<HTMLElement>; 
 
-
+  subscriptions$: SubscriptionLike[] = [];
   posts: any = [];
   userName: any = localStorage.getItem("user_name");
 
@@ -45,9 +45,9 @@ export class ProfileComponent implements OnInit {
   }
 
   retrivingData(){
-    this.apiService.getUserPosts(this.userName).subscribe((posts: any) => {
+    this.subscriptions$.push(this.apiService.getUserPosts(this.userName).subscribe((posts: any) => {
       this.posts = posts;
-    });
+    }));
   }
 
   upload(){
@@ -62,12 +62,17 @@ export class ProfileComponent implements OnInit {
       javaForm.set('image', imageProcessed);
       javaForm.set('description', descriptionPure);
       //post request
-      this.apiService.postRequest(`/routes/post/create`, javaForm).subscribe( () => {
+      this.subscriptions$.push(this.apiService.postRequest(`/routes/post/create`, javaForm)
+      .subscribe( () => {
         //no errors erase the form and update the posts array
         this.uploadForm.patchValue({ imageInput: '', descriptionInput: '', });
         this.retrivingData();
-      });
+      }));
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions$.forEach(subscription => subscription.unsubscribe())
   }
 
 }

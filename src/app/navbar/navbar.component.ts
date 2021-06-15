@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router'; //for subscribing
+import { SubscriptionLike } from "rxjs";
 
 import { AuthService } from '../services/auth.service';
 
@@ -10,8 +11,9 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
 
+  subscriptions$: SubscriptionLike[] = [];
   loggedIn: boolean = false;
   notLoggedIn: boolean = true;
 
@@ -26,12 +28,16 @@ export class NavbarComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    this.router.events.subscribe((event: any) => {
+    this.subscriptions$.push(this.router.events.subscribe((event: any) => {
       if (event.constructor.name === "NavigationEnd") {
       this.authService.isLoggedIn() ? this.loggedIn = true : this.loggedIn = false;
       this.notLoggedIn = !this.loggedIn;
       }
-    });
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions$.forEach(subscription => subscription.unsubscribe());
   }
 
 }

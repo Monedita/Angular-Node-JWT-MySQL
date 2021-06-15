@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { SubscriptionLike } from "rxjs";
 
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
@@ -10,8 +11,9 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css']
 })
-export class PostComponent implements OnInit {
+export class PostComponent implements OnInit, OnDestroy {
 
+  subscriptions$: SubscriptionLike[] = [];
   postId: any = '';
   post: any = {};
   show: boolean = false;
@@ -55,10 +57,15 @@ export class PostComponent implements OnInit {
   }
 
   retrivingData(){
-    this.apiService.getRequest(`/routes/post/${this.postId}`).subscribe((post: any) => {
+    this.subscriptions$.push(this.apiService.getRequest(`/routes/post/${this.postId}`)
+    .subscribe((post: any) => {
       this.post = post;
       this.show = true;
-    });
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions$.forEach(subscription => subscription.unsubscribe())
   }
 
 }

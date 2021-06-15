@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
+import { SubscriptionLike } from "rxjs";
 
 import { AuthService } from '../services/auth.service';
 
@@ -9,7 +10,9 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy {
+
+  subscriptions$: SubscriptionLike[] = [];
 
   registerForm = new FormGroup({
     email: new FormControl('',[
@@ -34,19 +37,17 @@ export class RegisterComponent {
     private router: Router,
     ){}
 
-  /*register() {
-    this.apiService.postRequest('/auth/register',this.registerForm.value).subscribe((response) => {
-      console.log(response);
-    });
-  }*/
-
   register() {
     const payload = this.registerForm.value;
-      this.authService.register(payload)
-      .subscribe( () => {
+    this.subscriptions$.push(this.authService.register(payload)
+    .subscribe( () => {
         console.log("User is registred");
         this.router.navigateByUrl('/');
-      });
+      }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions$.forEach(subscription => subscription.unsubscribe())
   }
 
 }

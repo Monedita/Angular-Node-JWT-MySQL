@@ -4,8 +4,9 @@
   "scripts": {
     "start": "node server",
     "server watch": "nodemon server",
-    "compile": "ng build",
-    "watch": "ng build --watch --deleteOutputPath=false --configuration development"
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {

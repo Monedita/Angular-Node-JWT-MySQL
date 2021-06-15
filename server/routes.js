@@ -16,7 +16,7 @@ var privateKey = fs.readFileSync('private.key');
 var multer  = require('multer')
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, './dist/ang-node/uploads/')
+      cb(null, './uploads/')
     },
     filename: function (req, file, cb) {
       cb(null, file.fieldname + '-' + Date.now()+'.jpg')

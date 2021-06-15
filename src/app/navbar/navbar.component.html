@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" routerLink="/">Instagon</a>
+        <a class="nav-link" routerLink="/contact">
+            <img src="./uploads/icons/hireme.svg" width="30" height="30"> 
+        </a>
+        <a class="nav-item nav-link" routerLink="/">
+            <img src="./uploads/icons/world.svg" width="30" height="30"> 
+        </a>
+        <a class="nav-item nav-link" routerLink="/login"  *ngIf="notLoggedIn">
+            <img src="./uploads/icons/login.svg" width="30" height="30">
+        </a>
+        <a class="nav-item nav-link" routerLink="/register"  *ngIf="notLoggedIn">
+            <img src="./uploads/icons/register.svg" width="30" height="30">
+        </a>
+        <a class="nav-item nav-link" routerLink="/profile" *ngIf="loggedIn">
+            <img src="./uploads/icons/user.svg" width="30" height="30">
+        </a>
+        <a class="nav-item nav-link" routerLink="/login" (click)="logOut()" *ngIf="loggedIn">
+            <img src="./uploads/icons/logout.svg" width="30" height="30">
+        </a>
+</nav>

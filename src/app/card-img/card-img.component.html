@@ -1,0 +1,9 @@
+<div class="card mt-4">
+  <div class="p-2" *ngIf="user">
+    <h6 class="card-title"><a routerLink="../user/{{user}}">{{user}}</a></h6>
+  </div>
+  <a routerLink="/post/{{post.id}}"><img class="card-img-top" src="{{post.img_url}}"></a>
+  <div class="card-body">
+    <p class="card-text">{{post.description}}</p>
+  </div>
+</div>

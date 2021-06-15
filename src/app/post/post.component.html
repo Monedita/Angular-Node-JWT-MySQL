@@ -1,0 +1,35 @@
+<div class="container pt-2">
+  <div class="d-flex flex-row flex-wrap justify-content-around">
+
+    
+    <div class="card m-2" style="width: 32rem;" *ngIf="show">
+
+        <div class="p-2">
+          <h6 class="card-title"><a routerLink="/user/{{post.user_name}}">{{post.user_name}}</a></h6>
+        </div>
+        <img class="card-img-top" src="{{post.img_url}}">
+        <div class="card-body">
+          <p class="card-text">{{post.description}}</p>
+        </div>
+        <div class="p-2">
+          <h6>Comments:</h6>
+        </div>
+        <div class="card-body">
+          <p class="card-text" *ngFor="let oneComment of post.comments">
+              <a routerLink="/user/{{oneComment.user_name}}"><b>{{oneComment.user_name}}:</b></a> {{oneComment.comment}}
+            </p>
+        </div>
+
+        <form  [formGroup]="commentForm" (ngSubmit)="postComment()">
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Write a comment:</label>
+            <textarea formControlName="comment" class="form-control" id="comment" rows="3"></textarea>
+          </div>
+          <button type="submit" [disabled]="!commentForm.valid" class="btn btn-primary mt-2 float-right">Post Comments</button>
+        </form>
+
+    </div>
+
+
+  </div>
+</div>

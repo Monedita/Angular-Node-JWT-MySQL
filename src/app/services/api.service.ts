@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -10,14 +10,6 @@ import { catchError } from 'rxjs/operators';
 export class ApiService {
   //service - private variable type of HttpClientModule
   constructor(private http: HttpClient) {}
-
-  getAllPosts(){
-    return this.http.get('/routes/posts');
-  }
-  
-  getUserPosts(userName: any){
-    return this.http.get(`/routes/user/${userName}`);
-  }
 
   getRequest(url: string): Observable<any>{
     return this.http.get(url).pipe(

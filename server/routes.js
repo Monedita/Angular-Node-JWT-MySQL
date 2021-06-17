@@ -44,19 +44,20 @@ router.get('/posts', (req, res) =>{
 //Get especific post with the user_name and his comments
 router.get('/post/:postId', jwt({ secret: privateKey, algorithms: ['RS256'], }), (req, res) =>{
     const {postId} = req.params;
-    const object = {};
+    const post = {};
+    const comments = [{}];
     mysqlConnection.query('SELECT posts.*, users.user_name FROM posts LEFT JOIN users ON posts.user_id = users.id WHERE posts.id = ?', [postId], (error, rows, fields) => {
         if (error) {
             console.log(error);
         } else {
-            this.object = rows[0];
+            this.post = rows[0];
             //res.json(rows);
             mysqlConnection.query('SELECT comments.*, users.user_name FROM comments LEFT JOIN users ON comments.user_id = users.id WHERE post_id = ?', [postId], (error, rows, fields) => {
                 if (error) {
                     console.log(error);
                 } else {
-                    this.object.comments = rows;
-                    res.json(this.object);
+                    this.comments = rows;
+                    res.json([this.post,this.comments]);
                 }
             });
         }

@@ -7,18 +7,13 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';//for the http auth int
 
 import { AppComponent } from './app.component';
 
-import { NavbarComponent } from './navbar/navbar.component';
-import { ContactComponent } from './contact/contact.component';
-import { HomeComponent } from './home/home.component';
-import { CardImgComponent } from './card-img/card-img.component';
-import { UserComponent } from './user/user.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { PostComponent } from './post/post.component';
-import { ProfileComponent } from './profile/profile.component';
+//importing components from ./components/index.tx
+import { CardImgComponent, ContactComponent, HomeComponent, LoginComponent,
+  NavbarComponent, PostComponent, ProfileComponent, RegisterComponent,
+  UserComponent } from './components/';
 
-import { ApiService } from './services/api.service';
-import { AuthService } from './services/auth.service';
+
+import { ApiService, AuthService } from './services/';
 
 import { AuthInterceptor } from './auth.interceptor';
 

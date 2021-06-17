@@ -3,8 +3,9 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SubscriptionLike } from "rxjs";
 
-import { ApiService } from '../services/api.service';
-import { AuthService } from '../services/auth.service';
+import { ApiService, AuthService } from '../../services/';
+
+import { PostModel } from '../../models';
 
 @Component({
   selector: 'app-profile',
@@ -16,8 +17,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   @ViewChild('fileInput', { static: false }) fileInput?: ElementRef;
 
   subscriptions$: SubscriptionLike[] = [];
-  posts: any = [];
-  userName: any = localStorage.getItem("user_name");
+  posts: PostModel[] = [];
+  userName: string = String(localStorage.getItem("user_name"));
 
   uploadForm = new FormGroup({
     imageInput: new FormControl('',[
@@ -45,7 +46,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   retrivingData(){
-    this.subscriptions$.push(this.apiService.getUserPosts(this.userName).subscribe((posts: any) => {
+    this.subscriptions$.push(this.apiService.getRequest(`/routes/user/${this.userName}`).subscribe((posts: PostModel[]) => {
       this.posts = posts;
     }));
   }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router'; //for subscribing
 import { SubscriptionLike } from "rxjs";
 
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/';
 
 
 

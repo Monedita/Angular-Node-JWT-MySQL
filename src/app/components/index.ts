@@ -1,0 +1,9 @@
+export { CardImgComponent } from './card-img/card-img.component';
+export { ContactComponent } from './contact/contact.component';
+export { HomeComponent } from './home/home.component';
+export { LoginComponent } from './login/login.component';
+export { NavbarComponent } from './navbar/navbar.component';
+export { PostComponent } from './post/post.component';
+export { ProfileComponent } from './profile/profile.component';
+export { RegisterComponent } from './register/register.component';
+export { UserComponent } from './user/user.component';

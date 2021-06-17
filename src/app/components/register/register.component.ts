@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { SubscriptionLike } from "rxjs";
 
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/';
 
 @Component({
   selector: 'app-register',

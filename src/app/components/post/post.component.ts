@@ -3,8 +3,9 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SubscriptionLike } from "rxjs";
 
-import { ApiService } from '../services/api.service';
-import { AuthService } from '../services/auth.service';
+import { ApiService, AuthService } from '../../services/';
+
+import { PostModel, CommentModel } from '../../models';
 
 @Component({
   selector: 'app-post',
@@ -14,8 +15,9 @@ import { AuthService } from '../services/auth.service';
 export class PostComponent implements OnInit, OnDestroy {
 
   subscriptions$: SubscriptionLike[] = [];
-  postId: any = '';
-  post: any = {};
+  postId: any = 0;
+  post: PostModel = {id:0, img_url:'', description:'', user_id:0, user_name:'',};
+  comments: CommentModel[] = [];
   show: boolean = false;
 
   commentForm = new FormGroup({
@@ -43,6 +45,15 @@ export class PostComponent implements OnInit, OnDestroy {
     this.retrivingData();
   }
 
+  retrivingData(){
+    this.subscriptions$.push(this.apiService.getRequest(`/routes/post/${this.postId}`)
+    .subscribe( (resp) => {
+      this.post = resp[0];
+      this.comments = resp[1];
+      this.show = true;
+    }) );
+  }
+
   postComment() {
     //geting the post id from the route
     this.postId = this.activeRoute.snapshot.paramMap.get('postId');
@@ -54,14 +65,6 @@ export class PostComponent implements OnInit, OnDestroy {
         this.retrivingData();
         this.commentForm.patchValue({ comment: '', });
       });
-  }
-
-  retrivingData(){
-    this.subscriptions$.push(this.apiService.getRequest(`/routes/post/${this.postId}`)
-    .subscribe((post: any) => {
-      this.post = post;
-      this.show = true;
-    }));
   }
 
   ngOnDestroy(): void {

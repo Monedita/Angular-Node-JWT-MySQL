@@ -26,4 +26,4 @@ const PORT = process.env.PORT || 4600;
 
 app.listen(PORT, (req, res)=>{
     console.log('running');
-})
+});

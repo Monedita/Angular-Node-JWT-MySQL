@@ -20,16 +20,15 @@ CREATE TABLE posts (
 	img_url varchar(255) not null,
 	description text null,
 	user_id INT not null,
-	CONSTRAINT FK_user_post FOREIGN KEY (user_id)
-	REFERENCES users(id)
+	CONSTRAINT FK_user_post FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TABLE comments (
 	id INT PRIMARY KEY NOT null AUTO_INCREMENT,
 	comment TEXT NULL,
 	post_id INT(11) NOT NULL,
 	user_id INT(11) NOT NULL,
-	CONSTRAINT FK_post_coment FOREIGN KEY (post_id) REFERENCES posts(id),
-	CONSTRAINT FK_user_coment FOREIGN KEY (user_id) REFERENCES users(id)
+	CONSTRAINT FK_post_coment FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+	CONSTRAINT FK_user_coment FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 `;
 

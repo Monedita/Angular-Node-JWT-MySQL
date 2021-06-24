@@ -1,9 +1,15 @@
 <div class="card mt-4">
-  <div class="p-2" *ngIf="user">
-    <h6 class="card-title"><a routerLink="../user/{{user}}">{{user}}</a></h6>
+
+  <div class="p-2" >
+    <h6 class="card-title m-0 mb-2" style="float: left;" *ngIf="user">
+      <a routerLink="../user/{{user}}">{{user}}</a>
+    </h6>
+    <a routerLink="/post/{{post.id}}"><img class="card-img-top" src="{{post.img_url}}" id="picture"></a>
   </div>
-  <a routerLink="/post/{{post.id}}"><img class="card-img-top" src="{{post.img_url}}"></a>
+
   <div class="card-body">
-    <p class="card-text">{{post.description}}</p>
+    <img class="clickable" (click)="delete()"  *ngIf="canBeDeleted" style="float: right; padding: 0;" src="./uploads/icons/delete.svg" width="22" height="22"> 
+    <p class="card-text" style="overflow: hidden; white-space: nowrap;">{{post.description}}</p>
   </div>
+
 </div>

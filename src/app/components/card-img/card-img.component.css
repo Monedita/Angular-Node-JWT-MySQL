@@ -15,3 +15,16 @@ a:active {
 .clickable {
     cursor:pointer; 
 }
+
+#picture {
+    filter: none;
+    border-radius: 0;
+}
+#picture:hover, #picture:focus {
+    transition: .5s filter;
+    filter: sepia() saturate(2);
+    transform: scale(1.035);
+    border-style: solid;
+    border: black;
+    box-shadow: gray;
+}

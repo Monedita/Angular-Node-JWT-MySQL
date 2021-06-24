@@ -27,12 +27,12 @@ var storage = multer.diskStorage({
 
 
 //auth middleware line to add to the routes
-//jwt({ secret: 'secret', algorithms: ['RS256'], }), 
+//jwt({ secret: privateKey, algorithms: ['RS256'], }), 
 
  
 //Get newer posts
 router.get('/posts', (req, res) =>{
-    mysqlConnection.query('SELECT posts.*, users.user_name FROM posts LEFT JOIN users ON posts.user_id = users.id', (error, rows, fields) => {
+    mysqlConnection.query('SELECT posts.*, users.user_name FROM posts LEFT JOIN users ON posts.user_id = users.id ORDER BY `id` DESC', (error, rows, fields) => {
         if (error) {
             console.log(error);
         } else {
@@ -64,7 +64,7 @@ router.get('/post/:postId', jwt({ secret: privateKey, algorithms: ['RS256'], }),
     });
 });
 
-//Get especific post with the user_name and his comments
+//post comment into a post
 router.post('/post/:postId/postComment', jwt({ secret: privateKey, algorithms: ['RS256'], }), (req, res) =>{
     //var token = req.headers.authorization;
     //var decodedToken = jwt_decode(token);
@@ -105,10 +105,27 @@ upload.fields([{ name: 'image', maxCount: 1 }, { name: 'description', maxCount: 
 
 });
 
+//post delete
+router.delete('/post/:postId/delete', jwt({ secret: privateKey, algorithms: ['RS256'], }),
+(req, res) => {
+    const {postId} = req.params;
+    const token = req.headers.authorization;
+    const decodedToken = jwt_decode(token);
+    mysqlConnection.query('DELETE FROM posts WHERE id=? AND user_id=?', [postId, decodedToken.id], (error, rows, fields) => {
+        if (error){
+            console.log(error);
+        } else {
+            res.json({Status: 'Post Delete'});
+        }
+    });
+});
+
+
 //Get user posts
 router.get('/user/:userName', jwt({ secret: privateKey, algorithms: ['RS256'], }), (req, res) => {
     const {userName} = req.params;
-    mysqlConnection.query('SELECT * FROM users LEFT JOIN posts ON users.id = posts.user_id WHERE user_name = ?', [userName], (error, rows, fields) => {
+    mysqlConnection.query('SELECT * FROM users LEFT JOIN posts ON users.id = posts.user_id WHERE user_name = ?'// ORDER BY `posts.id` DESC
+        , [userName], (error, rows, fields) => {
         if (error) {
             console.log(error);
         } else {
@@ -118,42 +135,3 @@ router.get('/user/:userName', jwt({ secret: privateKey, algorithms: ['RS256'], }
 });
 
 module.exports = router;
-
-/*
-//create user
-router.post('/users', (req, res) =>{
-    const { id, user_name, real_name, email, password } = req.body;
-    mysqlConnection.query(`CALL processAddOrEditUser(?, ?, ?, ?, ?)`, [id, user_name, real_name, email, password], (error, rows, fields) => {
-        if (error){
-            console.log(error);
-        } else {
-            res.json({Status: 'User Saved'});
-        }
-    });
-});
-
-//modify user
-router.put('/users/:id', (req, res) =>{
-    const {id} = req.params;
-    const { user_name, real_name, email, password } = req.body;
-    mysqlConnection.query(`CALL processAddOrEditUser(?, ?, ?, ?, ?)`, [id, user_name, real_name, email, password], (error, rows, fields) => {
-        if (error){
-            console.log(error);
-        } else {
-            res.json({Status: 'User Updated'});
-        }
-    });
-});
-
-//user delete
-router.delete('/users/:id', (req, res) => {
-    const {id} = req.params;
-    mysqlConnection.query('DELETE FROM employees WHERE id=?', [id], (error, rows, fields) => {
-        if (error){
-            console.log(error);
-        } else {
-            res.json({Status: 'User Deleted'});
-        }
-    });
-});
-*/

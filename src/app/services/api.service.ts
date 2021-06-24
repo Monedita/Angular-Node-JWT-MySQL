@@ -29,6 +29,12 @@ export class ApiService {
     )
   }
 
+  deleteRequest(url:string, data: any): Observable<any> {
+    return this.http.delete(url, data).pipe(
+      catchError(this.handleError)
+    )
+  }
+
   //function to cach errors
   handleError(error: HttpErrorResponse) {
     if (error.status === 0) {

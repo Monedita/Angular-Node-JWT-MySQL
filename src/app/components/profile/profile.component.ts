@@ -72,6 +72,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  onDeleted(postId: number) {
+    this.subscriptions$.push(this.apiService.deleteRequest(`/routes/post/${postId}/delete`, {'postId': postId})
+    .subscribe( () => {
+        this.retrivingData();
+      }));
+  }
+
+
   ngOnDestroy(): void {
     this.subscriptions$.forEach(subscription => subscription.unsubscribe())
   }

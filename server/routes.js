@@ -2,6 +2,7 @@
 const express = require('express');//paquete instalado
 const router = express.Router();
 const axios = require('axios');//paquete instalado
+var fs = require('fs'); //also used to read private key for the JWT token
 
 //mysql
 const mysqlConnection = require('./database'); //Connects to the database
@@ -9,7 +10,6 @@ const mysqlConnection = require('./database'); //Connects to the database
 //JWT Tokens
 const jwt = require('express-jwt'); //auth JWTs token middleware
 const jwt_decode = require('jwt-decode'); //read JWT token
-var fs = require('fs');
 var privateKey = fs.readFileSync('private.key');
 
 //Upload Files
@@ -51,7 +51,6 @@ router.get('/post/:postId', jwt({ secret: privateKey, algorithms: ['RS256'], }),
             console.log(error);
         } else {
             this.post = rows[0];
-            //res.json(rows);
             mysqlConnection.query('SELECT comments.*, users.user_name FROM comments LEFT JOIN users ON comments.user_id = users.id WHERE post_id = ?', [postId], (error, rows, fields) => {
                 if (error) {
                     console.log(error);
@@ -111,11 +110,27 @@ router.delete('/post/:postId/delete', jwt({ secret: privateKey, algorithms: ['RS
     const {postId} = req.params;
     const token = req.headers.authorization;
     const decodedToken = jwt_decode(token);
-    mysqlConnection.query('DELETE FROM posts WHERE id=? AND user_id=?', [postId, decodedToken.id], (error, rows, fields) => {
+    //retriving the URL of the image file to be deleted
+    mysqlConnection.query('SELECT img_url FROM posts WHERE id=? AND user_id=?', [postId, decodedToken.id], (error, rows, fields) => {
         if (error){
             console.log(error);
         } else {
-            res.json({Status: 'Post Delete'});
+            //errase the file using fs with the retrived img_url data
+            console.log(rows[0].img_url);
+            fs.unlink(rows[0].img_url.substr(1), function (error) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    mysqlConnection.query('DELETE FROM posts WHERE id=? AND user_id=?', [postId, decodedToken.id], (error, rows, fields) => {
+                        if (error){
+                            console.log(error);
+                        } else {
+                            res.json({Status: 'Post Delete'});
+                        }
+                    });
+                }
+            });
         }
     });
 });
